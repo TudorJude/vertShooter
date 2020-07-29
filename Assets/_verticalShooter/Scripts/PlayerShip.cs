@@ -4,10 +4,13 @@ using UnityEngine;
 
 public class PlayerShip : MonoBehaviour
 {
+    public int maxHealth = 3;
+
+    private int currentHealth;
     // Start is called before the first frame update
     void Start()
     {
-        
+        currentHealth = maxHealth;
     }
 
     // Update is called once per frame
@@ -20,7 +23,7 @@ public class PlayerShip : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         Debug.Log("Collision detected: " + collision.gameObject.name);
-        Destroy(gameObject);
+        GetHit();
     }
 
     private void OnTriggerStay2D(Collider2D collision)
@@ -31,5 +34,34 @@ public class PlayerShip : MonoBehaviour
     private void OnTriggerExit2D(Collider2D collision)
     {
         
+    }
+
+    //get hit
+    private void GetHit()
+    {
+        currentHealth--;
+        StartCoroutine(GetHitCoroutine());
+        if(currentHealth <= 0)
+        {
+            Die();
+        }
+    }
+
+    private void Die()
+    {
+        Destroy(gameObject);
+    }
+
+    IEnumerator GetHitCoroutine()
+    {
+        float maxDuration = 0.2f;
+        float currentDuration = 0f;
+        while(currentDuration < maxDuration)
+        {
+            transform.localScale *= 1.01f;
+            currentDuration += 0.01f;
+            yield return new WaitForSecondsRealtime(0.01f);
+        }
+        transform.localScale = Vector3.one;// new Vector(1f,1f,1f);
     }
 }
