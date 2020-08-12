@@ -16,29 +16,11 @@ public class EnemyShip1 : Enemy
 
     private EnemyShipStates shipStates = EnemyShipStates.spawn;    
 
-    private PlayerShip playerShip;
-
-    private float xBoundaryLeft;
-    private float xBoundaryRight;
-
     private bool goingRight = false;
 
     private void Awake()
     {
-        GameObject shipObject = GameObject.FindGameObjectWithTag("Player");
-        playerShip = shipObject.GetComponent<PlayerShip>();
 
-        GameObject[] boundaries = GameObject.FindGameObjectsWithTag("Boundary");
-        if(boundaries[0].transform.position.x < boundaries[1].transform.position.x)
-        {
-            xBoundaryLeft = boundaries[0].transform.position.x;
-            xBoundaryRight = boundaries[1].transform.position.x;
-        }
-        else
-        {
-            xBoundaryLeft = boundaries[1].transform.position.x;
-            xBoundaryRight = boundaries[0].transform.position.x;
-        }
     }
 
     private void Start()

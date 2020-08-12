@@ -18,6 +18,10 @@ public class EnemyCleaner : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Destroy(collision.gameObject);
+        Enemy en = collision.gameObject.GetComponent<Enemy>();
+        if(en != null)
+        {
+            BusSystem.General.DestroyEnemy(en);
+        }
     }
 }

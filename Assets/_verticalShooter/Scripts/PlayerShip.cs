@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -26,20 +27,12 @@ public class PlayerShip : MonoBehaviour
         GetHit();
     }
 
-    private void OnTriggerStay2D(Collider2D collision)
-    {
-        
-    }
-
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        
-    }
-
     //get hit
     private void GetHit()
     {
         currentHealth--;
+        
+        BusSystem.General.ShipGotHit(currentHealth, maxHealth);
         StartCoroutine(GetHitCoroutine());
         if(currentHealth <= 0)
         {
@@ -49,7 +42,7 @@ public class PlayerShip : MonoBehaviour
 
     private void Die()
     {
-        Destroy(gameObject);
+        BusSystem.General.ShipGotDead(gameObject);
     }
 
     IEnumerator GetHitCoroutine()
