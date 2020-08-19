@@ -66,7 +66,7 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         spawnCounter += Time.deltaTime;
-        if(spawnCounter >= 6f)
+        if(spawnCounter >= 4f)
         {
             SpawnEnemies();
             spawnCounter = 0;
@@ -74,8 +74,11 @@ public class GameManager : MonoBehaviour
     }
 
     public void SpawnEnemies()
-    { 
-        BusSystem.General.SpawnEnemies(Enemy.EnemyType.Asteroid, 5, 2f);
+    {
+        if (UnityEngine.Random.Range(0, 2) > 0)
+            BusSystem.General.SpawnEnemies(Enemy.EnemyType.Asteroid, 5, 2f);
+        else
+            BusSystem.General.SpawnEnemies(Enemy.EnemyType.Enemy1, 4, 3f);
     }
 
     //handlers

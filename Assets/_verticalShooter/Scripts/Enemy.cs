@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
+    public int maxHitPoints;
     protected PlayerShip playerShip;
     protected float xBoundaryLeft;
     protected float xBoundaryRight;
+    private int hitPoints;
 
     public enum EnemyType
     {
@@ -21,5 +23,20 @@ public class Enemy : MonoBehaviour
         this.playerShip = playerShip;
         xBoundaryLeft = leftBound;
         xBoundaryRight = rightBound;
+        hitPoints = maxHitPoints;
+    }
+
+    private void GetHit(Bullet bulletInfo)
+    {
+        hitPoints -= bulletInfo.damage;
+        if(hitPoints <= 0)
+        {
+            KillSelf();
+        }
+    }
+
+    private void KillSelf()
+    {
+        BusSystem.General.DestroyEnemy(this);
     }
 }
