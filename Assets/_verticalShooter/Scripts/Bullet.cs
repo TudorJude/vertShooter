@@ -6,16 +6,24 @@ using System;
 [RequireComponent(typeof(Collider2D))]
 public class Bullet : MonoBehaviour
 {
-    public int damage = 1;
     public Action<Bullet> OnCleanSelf;
+
+    public int damage = 1;
+    public float speed;
+    public float lifeTime = 3f;
+    protected Vector3 normalizedDirection;
+    protected float lifeTimeCounter;
+
     public virtual void Init(Vector3 direction)
     {
-        
+        this.normalizedDirection = direction.normalized;
+        lifeTimeCounter = 0f;
     }
 
-    protected virtual void HitEnemy()
+    protected virtual void HitEnemy(Vector3 impactPosition)
     {
         Debug.Log("Hit Enemy");
+        BusSystem.Effects.BulletHit(impactPosition);
     }
 
     protected void CleanSelf()
@@ -27,8 +35,8 @@ public class Bullet : MonoBehaviour
     {
         if(collision.tag == "Enemy")
         {
-            HitEnemy();
-            collision.SendMessage("GetHit", this);
+            HitEnemy(collision.transform.position);
+            collision.SendMessage("GetHit", this);            
         }
     }
 }

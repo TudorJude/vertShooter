@@ -25,6 +25,12 @@ public static class BusSystem
         public static void ResumeGame() { OnGameResumed?.Invoke(); }
     }
 
+    public static class Effects
+    {
+        public static Action<Vector3> OnBulletImpact;
+        public static void BulletHit(Vector3 impactPosition) { OnBulletImpact?.Invoke(impactPosition); }
+    }
+
     public static class UI
     {
         public static Action OnGamePauseClicked;

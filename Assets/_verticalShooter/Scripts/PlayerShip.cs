@@ -31,8 +31,16 @@ public class PlayerShip : MonoBehaviour
         currentWeapon.Init();
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            currentWeapon.Shoot();
+        }
+    }
+
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         //Vector3 mosePos2D = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         //transform.position = new Vector3(mosePos2D.x, mosePos2D.y, 0);

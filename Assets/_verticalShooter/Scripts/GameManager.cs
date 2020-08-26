@@ -9,6 +9,15 @@ public class GameManager : MonoBehaviour
     public EnemySpawner enemyShip1Spawner;
 
     public PlayerShip playerShip;
+    [Header("Audio Clips")]
+    public AudioClip hitSound;
+    [Header("Prefabs")]
+    public HitParticle hitParticlePrefab;
+
+    private AudioSource audioSource;
+
+    //pools
+    private ObjectPool<HitParticle> hitParticlesPool;
 
     private float spawnCounter = 0;
 
@@ -16,7 +25,12 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+        audioSource = GetComponent<AudioSource>();
+
         spawnCounter = 0;
+        //init pools
+        hitParticlesPool = new ObjectPool<HitParticle>(hitParticlePrefab, 50, 50);
+        hitParticlesPool.Init();
 
         //Initialize stuff
         asteroidSpawner.Init(playerShip);
@@ -30,6 +44,9 @@ public class GameManager : MonoBehaviour
 
         BusSystem.UI.OnGamePauseClicked += PauseGame;
         BusSystem.UI.OnGameResumeClicked += ResumeFunction;
+
+        //effect related events
+        BusSystem.Effects.OnBulletImpact += HandleBulletImpact;
     }
 
     private void OnDisable()
@@ -39,6 +56,9 @@ public class GameManager : MonoBehaviour
 
         BusSystem.UI.OnGamePauseClicked -= PauseGame;
         BusSystem.UI.OnGameResumeClicked -= ResumeFunction;
+
+        //effect related events
+        BusSystem.Effects.OnBulletImpact -= HandleBulletImpact;
     }
 
     public void PauseGame()
@@ -86,4 +106,19 @@ public class GameManager : MonoBehaviour
     {
         ship.SetActive(false);
     }
+
+    private void HandleBulletImpact(Vector3 bulletImpactPos)
+    {
+        HitParticle hitPart = hitParticlesPool.Instantiate();
+        hitPart.transform.position = bulletImpactPos;
+        hitPart.OnCleanMe = () => 
+        {
+            hitParticlesPool.Destroy(hitPart);
+        };
+
+        //play a sound
+        audioSource.clip = hitSound;
+        audioSource.Play();
+    }
+
 }

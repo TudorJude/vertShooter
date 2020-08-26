@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ShootyWeapon : Weapon
+public class ShootyWeaponButCooler : Weapon
 {
     public AudioClip magnumSound;
     public MuzzleFlashParticle muzzleFlashPrefab;
@@ -36,6 +36,26 @@ public class ShootyWeapon : Weapon
     public override void Shoot()
     {
         base.Shoot();
+        StartCoroutine(ShootCoroutine());
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            weaponLevel++;
+        }
+
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            weaponLevel--;
+            if (weaponLevel < 1)
+                weaponLevel = 1;
+        }
+    }
+
+    IEnumerator ShootCoroutine()
+    {
         var muzzleFlash = muzzleFlashPool.Instantiate();
         muzzleFlash.transform.SetParent(this.transform);
         muzzleFlash.transform.localPosition = Vector3.zero;
@@ -58,21 +78,7 @@ public class ShootyWeapon : Weapon
                 activeBullets.Remove(bullet);
                 bulletPool.Destroy(bullet);
             };
-        }
-    }
-
-    private void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.Q))
-        {
-            weaponLevel++;
-        }
-
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            weaponLevel--;
-            if (weaponLevel < 1)
-                weaponLevel = 1;
+            yield return new WaitForSeconds(0.04f);
         }
     }
 

@@ -29,6 +29,7 @@ public class ObjectPool<T> where T : MonoBehaviour
     public void Init()
     {
         poolParent = new GameObject("_pool_" + initialObjectCopy.name);
+        poolParent.transform.position = new Vector3(-1000f, 0f, 0f);
         for(int i = 0; i < currentSize; i++)
         {
             T tempObj = GameObject.Instantiate(initialObjectCopy, poolParent.transform);

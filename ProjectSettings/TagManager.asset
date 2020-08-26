@@ -15,6 +15,7 @@ TagManager:
   - PlayerRay
   - Rocket
   - Boundary
+  - FxTemporaire
   layers:
   - Default
   - TransparentFX
@@ -54,4 +55,7 @@ TagManager:
     locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Effects
+    uniqueID: 3001902757
     locked: 0
