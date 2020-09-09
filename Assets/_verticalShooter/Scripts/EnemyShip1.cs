@@ -4,67 +4,30 @@ using UnityEngine;
 
 public class EnemyShip1 : Enemy
 {
-    enum EnemyShipStates
+    public float speed = 3;
+    public float directionChangeDuration = 2f;
+
+    private float directionChangedCounter = 0f;
+
+    private float moveDirection = -1f;
+
+    public override void Init(float leftBound, float rightBound, PlayerShip playerShip)
     {
-        spawn,
-        goToPlayer,
-        tryKillPlayer
+        base.Init(leftBound, rightBound, playerShip);
+        directionChangedCounter = directionChangeDuration / 2;
+        moveDirection = -1f;
     }
 
-    public float distanceToPlayer = 10f;
-    public float speed = 3.5f;
-
-    private EnemyShipStates shipStates = EnemyShipStates.spawn;    
-
-    private bool goingRight = false;
-
-    private void Awake()
-    {
-
-    }
-
-    private void Start()
-    {
-        shipStates = EnemyShipStates.goToPlayer;
-    }
-
-    // Update is called once per frame
     private void Update()
     {
-        switch(shipStates)
+        if (isDeactivated) return;
+        transform.Translate(moveDirection * speed * Time.deltaTime, 0f, 0f);
+        directionChangedCounter += Time.deltaTime;
+        if (directionChangedCounter > directionChangeDuration)
         {
-            case EnemyShipStates.goToPlayer:
-                {
-                    float currentDistance = Vector3.Distance(transform.position, playerShip.transform.position);
-                    if(currentDistance <= distanceToPlayer)
-                    {
-                        shipStates = EnemyShipStates.tryKillPlayer;
-                    }
-                    else
-                    {
-                        transform.Translate(0f, -speed * Time.deltaTime, 0f);
-                    }
-                }break;
-            case EnemyShipStates.tryKillPlayer:
-                {
-                    if(transform.position.x < xBoundaryLeft)
-                    {
-                        goingRight = true;
-                    }
-                    if (transform.position.x > xBoundaryRight)
-                    {
-                        goingRight = false;
-                    }
-                    if(goingRight)
-                    {
-                        transform.Translate(speed * Time.deltaTime, 0f, 0f);
-                    }
-                    else
-                    {
-                        transform.Translate(-speed * Time.deltaTime, 0f, 0f);
-                    }
-                }
-                break;
+            directionChangedCounter = 0f;
+            moveDirection *= -1f;
+            Debug.Log("direction: " + moveDirection);
         }
     }
 }

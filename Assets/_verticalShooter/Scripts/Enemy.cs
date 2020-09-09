@@ -8,6 +8,8 @@ public class Enemy : MonoBehaviour
     protected PlayerShip playerShip;
     protected float xBoundaryLeft;
     protected float xBoundaryRight;
+    protected bool isDeactivated;
+
     private int hitPoints;
 
     public enum EnemyType
@@ -18,12 +20,18 @@ public class Enemy : MonoBehaviour
     public EnemyType enemyType;
 
     //custom functions
-    public void Init(float leftBound, float rightBound, PlayerShip playerShip)
+    public virtual void Init(float leftBound, float rightBound, PlayerShip playerShip)
     {
         this.playerShip = playerShip;
         xBoundaryLeft = leftBound;
         xBoundaryRight = rightBound;
         hitPoints = maxHitPoints;
+        isDeactivated = true;
+    }
+
+    public void Activate()
+    {
+        isDeactivated = false;
     }
 
     private void GetHit(Bullet bulletInfo)

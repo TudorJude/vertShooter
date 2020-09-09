@@ -5,8 +5,7 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public EnemySpawner asteroidSpawner;
-    public EnemySpawner enemyShip1Spawner;
+    public EnemySpawner enemySpawner;
 
     public PlayerShip playerShip;
     [Header("Audio Clips")]
@@ -33,8 +32,7 @@ public class GameManager : MonoBehaviour
         hitParticlesPool.Init();
 
         //Initialize stuff
-        asteroidSpawner.Init(playerShip);
-        enemyShip1Spawner.Init(playerShip);
+        enemySpawner.Init(playerShip);
     }
 
     private void OnEnable()
@@ -81,24 +79,6 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1f;
 
         BusSystem.General.ResumeGame();
-    }
-
-    private void Update()
-    {
-        spawnCounter += Time.deltaTime;
-        if(spawnCounter >= 4f)
-        {
-            SpawnEnemies();
-            spawnCounter = 0;
-        }
-    }
-
-    public void SpawnEnemies()
-    {
-        if (UnityEngine.Random.Range(0, 2) > 0)
-            BusSystem.General.SpawnEnemies(Enemy.EnemyType.Asteroid, 5, 2f);
-        else
-            BusSystem.General.SpawnEnemies(Enemy.EnemyType.Enemy1, 4, 3f);
     }
 
     //handlers
