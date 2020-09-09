@@ -12,11 +12,13 @@ public class GameManager : MonoBehaviour
     public AudioClip hitSound;
     [Header("Prefabs")]
     public HitParticle hitParticlePrefab;
+    public HitParticle enemyDeathEffectPrefab;
 
     private AudioSource audioSource;
 
     //pools
     private ObjectPool<HitParticle> hitParticlesPool;
+    private ObjectPool<HitParticle> enemyDeathEffectPool;
 
     private float spawnCounter = 0;
 
@@ -30,6 +32,9 @@ public class GameManager : MonoBehaviour
         //init pools
         hitParticlesPool = new ObjectPool<HitParticle>(hitParticlePrefab, 50, 50);
         hitParticlesPool.Init();
+
+        enemyDeathEffectPool = new ObjectPool<HitParticle>(enemyDeathEffectPrefab, 50, 50);
+        enemyDeathEffectPool.Init();
 
         //Initialize stuff
         enemySpawner.Init(playerShip);
@@ -45,6 +50,7 @@ public class GameManager : MonoBehaviour
 
         //effect related events
         BusSystem.Effects.OnBulletImpact += HandleBulletImpact;
+        BusSystem.General.OnEnemyDestroyed += HandleEnemyDied;
     }
 
     private void OnDisable()
@@ -57,6 +63,7 @@ public class GameManager : MonoBehaviour
 
         //effect related events
         BusSystem.Effects.OnBulletImpact -= HandleBulletImpact;
+        BusSystem.General.OnEnemyDestroyed -= HandleEnemyDied;
     }
 
     public void PauseGame()
@@ -94,6 +101,21 @@ public class GameManager : MonoBehaviour
         hitPart.OnCleanMe = () => 
         {
             hitParticlesPool.Destroy(hitPart);
+        };
+
+        //play a sound
+        audioSource.clip = hitSound;
+        audioSource.Play();
+    }
+
+    private void HandleEnemyDied(Enemy enemyData)
+    {
+        Vector3 deathPos = enemyData.transform.position;
+        HitParticle hitPart = enemyDeathEffectPool.Instantiate();
+        hitPart.transform.position = deathPos;
+        hitPart.OnCleanMe = () =>
+        {
+            enemyDeathEffectPool.Destroy(hitPart);
         };
 
         //play a sound

@@ -121,18 +121,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!114 &75318641 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3671557135365597885, guid: d25873985ad857c4e861ac14d85596ad,
-    type: 3}
-  m_PrefabInstance: {fileID: 8487700726287383237}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1a63296647395754399e90f07b9cf687, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &90601328
 GameObject:
   m_ObjectHideFlags: 0
@@ -250,6 +238,8 @@ MonoBehaviour:
   playerShip: {fileID: 709513657}
   hitSound: {fileID: 8300000, guid: 412215dcf869bdb40a657f3071ef49fc, type: 3}
   hitParticlePrefab: {fileID: 6804759023627474428, guid: 499eaa349a3ae7842a4dfb38dbe27027,
+    type: 3}
+  enemyDeathEffectPrefab: {fileID: 7249409410971720587, guid: d8c5b1b55983934429735bf9aa4e5562,
     type: 3}
 --- !u!4 &213287938
 Transform:
@@ -636,6 +626,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &620703899 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5819298291885345272, guid: d25873985ad857c4e861ac14d85596ad,
+    type: 3}
+  m_PrefabInstance: {fileID: 8487700726287383237}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b732ba0afe267654fb9bd25a992f5b18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &709513657 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8487700725586291580, guid: d25873985ad857c4e861ac14d85596ad,
@@ -1829,7 +1831,7 @@ PrefabInstance:
         type: 3}
       propertyPath: currentWeapon
       value: 
-      objectReference: {fileID: 75318641}
+      objectReference: {fileID: 620703899}
     - target: {fileID: 8487700725586291581, guid: d25873985ad857c4e861ac14d85596ad,
         type: 3}
       propertyPath: m_LocalPosition.x

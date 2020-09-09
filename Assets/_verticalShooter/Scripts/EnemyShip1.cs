@@ -27,7 +27,6 @@ public class EnemyShip1 : Enemy
         {
             directionChangedCounter = 0f;
             moveDirection *= -1f;
-            Debug.Log("direction: " + moveDirection);
         }
     }
 }
