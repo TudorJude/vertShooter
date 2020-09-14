@@ -19,6 +19,9 @@ public static class BusSystem
         public static Action<Enemy> OnEnemyDestroyed;
         public static void DestroyEnemy(Enemy enemy) { OnEnemyDestroyed?.Invoke(enemy); }
 
+        public static Action<WaveData> OnWaveCleared;
+        public static void ClearWave(WaveData wData) { OnWaveCleared?.Invoke(wData); }
+
         public static Action OnGamePaused;
         public static void PauseGame() { OnGamePaused?.Invoke(); }
         public static Action OnGameResumed;

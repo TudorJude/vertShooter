@@ -19,7 +19,17 @@ public class Enemy : MonoBehaviour
     }
     public EnemyType enemyType;
 
+    private void Awake()
+    {
+        OnCreate();
+    }
+
     //custom functions
+    protected virtual void OnCreate()
+    {
+
+    }
+
     public virtual void Init(float leftBound, float rightBound, PlayerShip playerShip)
     {
         this.playerShip = playerShip;
@@ -32,6 +42,11 @@ public class Enemy : MonoBehaviour
     public void Activate()
     {
         isDeactivated = false;
+    }
+
+    public virtual void Stimulate()
+    {
+
     }
 
     private void GetHit(Bullet bulletInfo)

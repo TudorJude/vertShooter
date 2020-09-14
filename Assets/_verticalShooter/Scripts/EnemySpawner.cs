@@ -4,6 +4,92 @@ using UnityEngine;
 using System;
 using System.Linq;
 
+public class WaveBehaviour
+{
+    public Action<WaveData> OnWaveCleared;
+    public WaveData waveData;
+    public List<Enemy> enemyList;
+
+    private float waveStimulatedCounter = 0f;
+    private float secondsTillStimulate = 0f;
+    private bool randomValueCalculated = false;
+
+    public WaveBehaviour(WaveData waveData, int enemyListSize)
+    {
+        enemyList = new List<Enemy>(enemyListSize);
+        this.waveData = waveData;
+    }
+
+    public void ActivateWave(List<Enemy> enemyListToCopy)
+    {
+        enemyList = enemyListToCopy;
+        foreach (var enemy in enemyList)
+        {
+            enemy.Activate();
+        }
+    }
+
+    public void EnemyDestroyed(Enemy en)
+    {
+        if (enemyList.Count <= 0)
+        {
+            OnWaveCleared?.Invoke(waveData);
+        }
+    }
+
+    public void UpdateBehaviour()
+    {
+        if (!randomValueCalculated)
+        {
+            secondsTillStimulate = UnityEngine.Random.Range(waveData.secondsToBestimulatedMin, waveData.secondsToBestimulatedMax);
+            randomValueCalculated = true;
+        }
+        waveStimulatedCounter += Time.deltaTime;
+        if (waveStimulatedCounter >= secondsTillStimulate)
+        {
+            int enemiesToBeStimulated = UnityEngine.Random.Range(waveData.enemiesToBestimulatedMin, waveData.enemiesToBeStimulatedMax + 1);
+            if (enemiesToBeStimulated > enemyList.Count)
+            {
+                enemiesToBeStimulated = enemyList.Count;
+                foreach (var en in enemyList)
+                {
+                    en.Stimulate();
+                }
+                randomValueCalculated = false;
+                waveStimulatedCounter = 0;
+                return;
+            }
+            //randomly pick shit
+            List<int> indexes = new List<int>();
+            for (int i = 0; i < enemyList.Count; i++)
+            {
+                indexes.Add(i);
+            }
+            //shuffles indexes list
+            System.Random rng = new System.Random();
+            int n = indexes.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = rng.Next(n + 1);
+                int value = indexes[k];
+                indexes[k] = indexes[n];
+                indexes[n] = value;
+            }
+            //create 
+            indexes.RemoveRange(enemiesToBeStimulated, indexes.Count - 1);
+
+            for(int i = 0; i < indexes.Count; i++)
+            {
+                enemyList[i].Stimulate();
+            }
+
+            randomValueCalculated = false;
+            waveStimulatedCounter = 0;
+        }
+    }
+}
+
 public class EnemySpawner : MonoBehaviour
 {
     public GameObject leftLimit;
@@ -20,6 +106,7 @@ public class EnemySpawner : MonoBehaviour
     private float xRightSpawnValue;
 
     private List<Enemy> enemyList;
+    private WaveBehaviour currentWaveBehaviour;
 
     private PlayerShip playerShip;
 
@@ -74,6 +161,10 @@ public class EnemySpawner : MonoBehaviour
 
     private void Update()
     {
+        if(currentWaveBehaviour != null)
+        {
+            currentWaveBehaviour.UpdateBehaviour();
+        }
         if (Input.GetKeyDown(KeyCode.W))
         {
             SpawnWave(waveToSpawn);
@@ -96,6 +187,7 @@ public class EnemySpawner : MonoBehaviour
     private void SpawnWave(WaveData wave)
     {
         float maxSpawnDelay = -1;
+        int enemyCounter = 0;
         List<float> tempFloatList;
         for (int i = 0; i < matrixRows; i++)
         {
@@ -114,6 +206,7 @@ public class EnemySpawner : MonoBehaviour
                 if (tempFloatList[j] > 0)
                 {
                     SpawnEnemy(enemySpawnMatrix[j][i], tempFloatList[j]);
+                    enemyCounter++;
                     if (maxSpawnDelay < tempFloatList[j])
                     {
                         maxSpawnDelay = tempFloatList[j];
@@ -122,6 +215,12 @@ public class EnemySpawner : MonoBehaviour
             }
             StartCoroutine(ActivateWave(maxSpawnDelay));
         }
+        currentWaveBehaviour = new WaveBehaviour(wave, enemyCounter);
+        currentWaveBehaviour.OnWaveCleared = (wData) =>
+        {
+            BusSystem.General.ClearWave(wData);
+            currentWaveBehaviour.OnWaveCleared = null;
+        };
     }
 
     //handlers
@@ -148,9 +247,6 @@ public class EnemySpawner : MonoBehaviour
     IEnumerator ActivateWave(float delay)
     {
         yield return new WaitForSeconds(delay);
-        foreach (var enemy in enemyList)
-        {
-            enemy.Activate();
-        }
+        currentWaveBehaviour.ActivateWave(enemyList);
     }
 }

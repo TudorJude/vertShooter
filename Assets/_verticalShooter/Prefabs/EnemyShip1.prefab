@@ -164,6 +164,8 @@ MonoBehaviour:
   enemyType: 1
   speed: 3.5
   directionChangeDuration: 2
+  bulletPrefab: {fileID: 6065973127151853471, guid: 91ef838df19092043a4fcf8586073827,
+    type: 3}
 --- !u!60 &8811902530038687305
 PolygonCollider2D:
   m_ObjectHideFlags: 0

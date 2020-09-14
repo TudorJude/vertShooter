@@ -14,4 +14,11 @@ public class WaveData : ScriptableObject
     public List<float> row2;
     public List<float> row3;
     public List<float> row4;
+
+    //behaviour data
+    public float secondsToBestimulatedMin = 2f;
+    public float secondsToBestimulatedMax = 4f;
+
+    public int enemiesToBestimulatedMin = 3;
+    public int enemiesToBeStimulatedMax = 5;
 }

@@ -70,17 +70,10 @@ public class PlayerShip : MonoBehaviour
         previousDirection = fixedDest;
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.tag == "Projectile") return;
-        Debug.Log("Collision detected: " + collision.gameObject.name);
-        GetHit();
-    }
-
     //get hit
-    private void GetHit()
+    private void GetHit(int damageTaken)
     {
-        currentHealth--;
+        currentHealth -= damageTaken;
 
         BusSystem.General.ShipGotHit(currentHealth, maxHealth);
         StartCoroutine(GetHitCoroutine());
