@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60a1a5f0543d90d4596231744a45b729, type: 3}
   m_Name: Wave_0
   m_EditorClassIdentifier: 
-  waveID: 0
+  eventID: 100
   enemyToSpawnPrefab: {fileID: 8811902530038687306, guid: 8b78e8aa1f19f984a93ef71851465bde,
     type: 3}
   row0:
@@ -40,3 +40,7 @@ MonoBehaviour:
   - -1
   - 1
   - -1
+  secondsToBestimulatedMin: 0.6
+  secondsToBestimulatedMax: 0.8
+  enemiesToBestimulatedMin: 3
+  enemiesToBeStimulatedMax: 5

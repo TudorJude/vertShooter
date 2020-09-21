@@ -19,13 +19,22 @@ public static class BusSystem
         public static Action<Enemy> OnEnemyDestroyed;
         public static void DestroyEnemy(Enemy enemy) { OnEnemyDestroyed?.Invoke(enemy); }
 
-        public static Action<WaveData> OnWaveCleared;
-        public static void ClearWave(WaveData wData) { OnWaveCleared?.Invoke(wData); }
-
         public static Action OnGamePaused;
         public static void PauseGame() { OnGamePaused?.Invoke(); }
         public static Action OnGameResumed;
         public static void ResumeGame() { OnGameResumed?.Invoke(); }
+    }
+
+    public static class LevelEvents
+    {
+        public static Action<int, MessageEvent> OnDisplayMessageEvent;
+        public static void DisplayMessageEvent(int eventId, MessageEvent messEvnt) { OnDisplayMessageEvent?.Invoke(eventId, messEvnt); }
+
+        public static Action<int, WaveData> OnSpawnWave;
+        public static void SpawnWave(int eventId, WaveData waveData) { OnSpawnWave?.Invoke(eventId, waveData); }
+
+        public static Action<int> OnLevelEventFinished;
+        public static void LevelEventFinished(int eventId) { OnLevelEventFinished?.Invoke(eventId); }
     }
 
     public static class Effects

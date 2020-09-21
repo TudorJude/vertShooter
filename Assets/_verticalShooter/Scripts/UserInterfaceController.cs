@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,6 +10,9 @@ public class UserInterfaceController : MonoBehaviour
     public Image healthBar;
 
     public RectTransform pausePanel;
+
+    //texts
+    public TextMeshProUGUI levelEventMessage;
 
     //pause resume buttons
     public Button pauseButton;
@@ -25,6 +29,9 @@ public class UserInterfaceController : MonoBehaviour
         BusSystem.General.OnShipHit += HandleHealthChanged;
         BusSystem.General.OnGamePaused += HandleGamePaused;
         BusSystem.General.OnGameResumed += HandleGameResumed;
+
+        //level events
+        BusSystem.LevelEvents.OnDisplayMessageEvent += HandleShowLevelEventMessage;
 
         //onClick subscriptions
         pauseButton.onClick.AddListener
@@ -43,6 +50,9 @@ public class UserInterfaceController : MonoBehaviour
         BusSystem.General.OnShipHit -= HandleHealthChanged;
         BusSystem.General.OnGamePaused -= HandleGamePaused;
         BusSystem.General.OnGameResumed -= HandleGameResumed;
+
+        //level events
+        BusSystem.LevelEvents.OnDisplayMessageEvent -= HandleShowLevelEventMessage;
 
         pauseButton.onClick.RemoveAllListeners();
         resumeButton.onClick.RemoveAllListeners();
@@ -64,6 +74,20 @@ public class UserInterfaceController : MonoBehaviour
         pausePanel.gameObject.SetActive(false);
     }
 
+    private void HandleShowLevelEventMessage(int levelEventID, MessageEvent messageEvent)
+    {
+        levelEventMessage.gameObject.SetActive(true);
+        levelEventMessage.text = "";
+        StartCoroutine(
+            DisplayTextButCooler(messageEvent.messageToSay,
+            ()=> 
+            {
+                levelEventMessage.gameObject.SetActive(false);
+                BusSystem.LevelEvents.LevelEventFinished(levelEventID);
+            })
+            );
+    }
+
     //button on click handlers
     private void HandlePauseGameClicked()
     {        
@@ -73,5 +97,20 @@ public class UserInterfaceController : MonoBehaviour
     private void HandleResumeGameClicked()
     {        
         BusSystem.UI.ResumeGameRequest();
+    }
+
+    //coroutines
+    private IEnumerator DisplayTextButCooler(string textToShow, Action onDone)
+    {
+        string tempText= "";
+        WaitForSeconds displayDelay = new WaitForSeconds(0.1f);
+        for(int i = 0; i < textToShow.Length; i++)
+        {
+            tempText += textToShow[i];
+            levelEventMessage.text = tempText;
+            yield return displayDelay;
+        }
+        yield return new WaitForSeconds(3f);
+        onDone?.Invoke();
     }
 }

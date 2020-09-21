@@ -6,18 +6,20 @@ using System.Linq;
 
 public class WaveBehaviour
 {
-    public Action<WaveData> OnWaveCleared;
+    public Action<int> OnWaveCleared;
     public WaveData waveData;
     public List<Enemy> enemyList;
 
     private float waveStimulatedCounter = 0f;
     private float secondsTillStimulate = 0f;
     private bool randomValueCalculated = false;
+    private int levelEventId;
 
-    public WaveBehaviour(WaveData waveData, int enemyListSize)
+    public WaveBehaviour(WaveData waveData, int enemyListSize, int levelEventId)
     {
         enemyList = new List<Enemy>(enemyListSize);
         this.waveData = waveData;
+        this.levelEventId = levelEventId;
     }
 
     public void ActivateWave(List<Enemy> enemyListToCopy)
@@ -33,7 +35,7 @@ public class WaveBehaviour
     {
         if (enemyList.Count <= 0)
         {
-            OnWaveCleared?.Invoke(waveData);
+            OnWaveCleared?.Invoke(levelEventId);
         }
     }
 
@@ -77,7 +79,7 @@ public class WaveBehaviour
                 indexes[n] = value;
             }
             //create 
-            indexes.RemoveRange(enemiesToBeStimulated, indexes.Count - 1);
+            indexes.RemoveRange(enemiesToBeStimulated, indexes.Count - enemiesToBeStimulated);
 
             for(int i = 0; i < indexes.Count; i++)
             {
@@ -96,8 +98,7 @@ public class EnemySpawner : MonoBehaviour
     public GameObject rightLimit;
     public GameObject lowerLimit;
 
-    [Header("Wave")]
-    public WaveData waveToSpawn;
+    private WaveData waveToSpawn;
 
     private float uppwerYSpawnValue;
     private float lowerYSpawnValue;
@@ -127,10 +128,6 @@ public class EnemySpawner : MonoBehaviour
 
         enemyList = new List<Enemy>();
 
-        //creating pool
-        enemyPool = new ObjectPool<Enemy>(waveToSpawn.enemyToSpawnPrefab, 30);
-        enemyPool.Init();
-
         //matrix init
         //x length
         float xMiniSegmentLength = (xRightSpawnValue - xLeftSpawnValue) / (matrixCols);
@@ -152,11 +149,17 @@ public class EnemySpawner : MonoBehaviour
     private void OnEnable()
     {
         BusSystem.General.OnEnemyDestroyed += HandleEnemyDestroy;
+
+        //level events
+        BusSystem.LevelEvents.OnSpawnWave += HandleSpawnWave;
     }
 
     private void OnDisable()
     {
         BusSystem.General.OnEnemyDestroyed -= HandleEnemyDestroy;
+
+        //level events
+        BusSystem.LevelEvents.OnSpawnWave -= HandleSpawnWave;
     }
 
     private void Update()
@@ -165,10 +168,10 @@ public class EnemySpawner : MonoBehaviour
         {
             currentWaveBehaviour.UpdateBehaviour();
         }
-        if (Input.GetKeyDown(KeyCode.W))
-        {
-            SpawnWave(waveToSpawn);
-        }
+        //if (Input.GetKeyDown(KeyCode.W))
+        //{
+        //    SpawnWave(waveToSpawn);
+        //}
     }
 
     //custom functions
@@ -184,7 +187,7 @@ public class EnemySpawner : MonoBehaviour
         StartCoroutine(SpawnShipWithDelay(spawnPos, spawnDelay));
     }
 
-    private void SpawnWave(WaveData wave)
+    private void SpawnWave(int levelEventId, WaveData wave)
     {
         float maxSpawnDelay = -1;
         int enemyCounter = 0;
@@ -215,10 +218,10 @@ public class EnemySpawner : MonoBehaviour
             }
             StartCoroutine(ActivateWave(maxSpawnDelay));
         }
-        currentWaveBehaviour = new WaveBehaviour(wave, enemyCounter);
-        currentWaveBehaviour.OnWaveCleared = (wData) =>
+        currentWaveBehaviour = new WaveBehaviour(wave, enemyCounter, levelEventId);
+        currentWaveBehaviour.OnWaveCleared = (lvlEvntId) =>
         {
-            BusSystem.General.ClearWave(wData);
+            BusSystem.LevelEvents.LevelEventFinished(lvlEvntId);
             currentWaveBehaviour.OnWaveCleared = null;
         };
     }
@@ -230,6 +233,18 @@ public class EnemySpawner : MonoBehaviour
             return;
         enemyList.Remove(en);
         enemyPool.Destroy(en);
+        currentWaveBehaviour.EnemyDestroyed(en);
+    }
+
+    private void HandleSpawnWave(int levelEventId, WaveData waveToSpawn)
+    {
+        this.waveToSpawn = waveToSpawn;
+
+        //creating pool
+        enemyPool = new ObjectPool<Enemy>(waveToSpawn.enemyToSpawnPrefab, 30);
+        enemyPool.Init();
+
+        SpawnWave(levelEventId, waveToSpawn);
     }
 
     //IEnumerators

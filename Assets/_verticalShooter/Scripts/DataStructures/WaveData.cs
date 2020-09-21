@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "WaveFile", menuName = "Custom/Wave", order = 100)]
-public class WaveData : ScriptableObject
+public class WaveData : LevelEvent
 {
-    public int waveID = 0;
-
     public Enemy enemyToSpawnPrefab;
 
     public List<float> row0;

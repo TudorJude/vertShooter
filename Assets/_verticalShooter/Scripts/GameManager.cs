@@ -14,6 +14,12 @@ public class GameManager : MonoBehaviour
     public HitParticle hitParticlePrefab;
     public HitParticle enemyDeathEffectPrefab;
 
+    //temporary
+    public LevelData levelToTest;
+
+    //level event data
+    private Dictionary<int, LevelEvent> levelDataDictionary;
+
     private AudioSource audioSource;
 
     //pools
@@ -38,6 +44,20 @@ public class GameManager : MonoBehaviour
 
         //Initialize stuff
         enemySpawner.Init(playerShip);
+
+        //handle our level
+        levelDataDictionary = new Dictionary<int, LevelEvent>();
+
+        for(int i = 0; i < levelToTest.levelEvents.Count; i++)
+        {
+            levelDataDictionary.Add(i, levelToTest.levelEvents[i]);
+        }
+    }
+
+    private void Start()
+    {
+        //start game
+        StartEvent(0);
     }
 
     private void OnEnable()
@@ -51,6 +71,9 @@ public class GameManager : MonoBehaviour
         //effect related events
         BusSystem.Effects.OnBulletImpact += HandleBulletImpact;
         BusSystem.General.OnEnemyDestroyed += HandleEnemyDied;
+
+        //level data
+        BusSystem.LevelEvents.OnLevelEventFinished += ChainToNextLevelEvent;
     }
 
     private void OnDisable()
@@ -64,6 +87,9 @@ public class GameManager : MonoBehaviour
         //effect related events
         BusSystem.Effects.OnBulletImpact -= HandleBulletImpact;
         BusSystem.General.OnEnemyDestroyed -= HandleEnemyDied;
+
+        //level data
+        BusSystem.LevelEvents.OnLevelEventFinished -= ChainToNextLevelEvent;
     }
 
     public void PauseGame()
@@ -86,6 +112,31 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1f;
 
         BusSystem.General.ResumeGame();
+    }
+
+    private void StartEvent(int eventId)
+    {
+        if(levelDataDictionary[eventId] is WaveData)
+        {
+            BusSystem.LevelEvents.SpawnWave(eventId, levelDataDictionary[eventId] as WaveData);
+            return;
+        }
+        if(levelDataDictionary[eventId] is MessageEvent)
+        {
+            BusSystem.LevelEvents.DisplayMessageEvent(eventId, levelDataDictionary[eventId] as MessageEvent);
+        }
+    }
+
+    private void ChainToNextLevelEvent(int eventId)
+    {
+        if(eventId >= levelDataDictionary.Count - 1)
+        {
+            Debug.Log("Congratulations, you win!");
+        }
+        else
+        {
+            StartEvent(eventId + 1);
+        }
     }
 
     //handlers
