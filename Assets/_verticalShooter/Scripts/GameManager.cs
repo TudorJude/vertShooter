@@ -121,6 +121,13 @@ public class GameManager : MonoBehaviour
             BusSystem.LevelEvents.SpawnWave(eventId, levelDataDictionary[eventId] as WaveData);
             return;
         }
+
+        if(levelDataDictionary[eventId] is BossSpawnData)
+        {
+            BusSystem.LevelEvents.SpawnBoss(eventId, levelDataDictionary[eventId] as BossSpawnData);
+            return;
+        }
+
         if(levelDataDictionary[eventId] is MessageEvent)
         {
             BusSystem.LevelEvents.DisplayMessageEvent(eventId, levelDataDictionary[eventId] as MessageEvent);

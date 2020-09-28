@@ -119,6 +119,9 @@ public class EnemySpawner : MonoBehaviour
     private int matrixCols = 4;
     private Vector3[][] enemySpawnMatrix;
 
+    //boss related variables
+    private GenericBossBehaviour currentBoss;
+
     private void Awake()
     {
         uppwerYSpawnValue = leftLimit.transform.position.y;
@@ -152,6 +155,7 @@ public class EnemySpawner : MonoBehaviour
 
         //level events
         BusSystem.LevelEvents.OnSpawnWave += HandleSpawnWave;
+        BusSystem.LevelEvents.OnSpawnBoss += HandleSpawnBoss;
     }
 
     private void OnDisable()
@@ -160,6 +164,7 @@ public class EnemySpawner : MonoBehaviour
 
         //level events
         BusSystem.LevelEvents.OnSpawnWave -= HandleSpawnWave;
+        BusSystem.LevelEvents.OnSpawnBoss -= HandleSpawnBoss;
     }
 
     private void Update()
@@ -245,6 +250,12 @@ public class EnemySpawner : MonoBehaviour
         enemyPool.Init();
 
         SpawnWave(levelEventId, waveToSpawn);
+    }
+
+    private void HandleSpawnBoss(int levelEventId, BossSpawnData bossData)
+    {
+        currentBoss = bossData.BossPrefab;
+        Instantiate(currentBoss, new Vector3(0f, 14f, 0), Quaternion.identity);
     }
 
     //IEnumerators

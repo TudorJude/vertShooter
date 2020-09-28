@@ -30,6 +30,9 @@ public class UserInterfaceController : MonoBehaviour
         BusSystem.General.OnGamePaused += HandleGamePaused;
         BusSystem.General.OnGameResumed += HandleGameResumed;
 
+        //generic message call
+        BusSystem.General.OnDisplayMessageGeneric += HandleDisplayMessage;
+
         //level events
         BusSystem.LevelEvents.OnDisplayMessageEvent += HandleShowLevelEventMessage;
 
@@ -50,6 +53,9 @@ public class UserInterfaceController : MonoBehaviour
         BusSystem.General.OnShipHit -= HandleHealthChanged;
         BusSystem.General.OnGamePaused -= HandleGamePaused;
         BusSystem.General.OnGameResumed -= HandleGameResumed;
+
+        //generic message call
+        BusSystem.General.OnDisplayMessageGeneric -= HandleDisplayMessage;
 
         //level events
         BusSystem.LevelEvents.OnDisplayMessageEvent -= HandleShowLevelEventMessage;
@@ -79,11 +85,24 @@ public class UserInterfaceController : MonoBehaviour
         levelEventMessage.gameObject.SetActive(true);
         levelEventMessage.text = "";
         StartCoroutine(
-            DisplayTextButCooler(messageEvent.messageToSay,
+            DisplayTextButCooler(messageEvent.messageToSay,3f,
             ()=> 
             {
                 levelEventMessage.gameObject.SetActive(false);
                 BusSystem.LevelEvents.LevelEventFinished(levelEventID);
+            })
+            );
+    }
+
+    private void HandleDisplayMessage(string message, float time)
+    {
+        levelEventMessage.gameObject.SetActive(true);
+        levelEventMessage.text = "";
+        StartCoroutine(
+            DisplayTextButCooler(message, time,
+            () =>
+            {
+                levelEventMessage.gameObject.SetActive(false);
             })
             );
     }
@@ -100,7 +119,7 @@ public class UserInterfaceController : MonoBehaviour
     }
 
     //coroutines
-    private IEnumerator DisplayTextButCooler(string textToShow, Action onDone)
+    private IEnumerator DisplayTextButCooler(string textToShow, float timeToDisplay, Action onDone)
     {
         string tempText= "";
         WaitForSeconds displayDelay = new WaitForSeconds(0.1f);
@@ -110,7 +129,7 @@ public class UserInterfaceController : MonoBehaviour
             levelEventMessage.text = tempText;
             yield return displayDelay;
         }
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(timeToDisplay);
         onDone?.Invoke();
     }
 }

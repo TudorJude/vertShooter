@@ -23,6 +23,9 @@ public static class BusSystem
         public static void PauseGame() { OnGamePaused?.Invoke(); }
         public static Action OnGameResumed;
         public static void ResumeGame() { OnGameResumed?.Invoke(); }
+
+        public static Action<string, float> OnDisplayMessageGeneric;
+        public static void CallDisplayGenericMessage(string message, float timeToShow) { OnDisplayMessageGeneric?.Invoke(message, timeToShow); }
     }
 
     public static class LevelEvents
@@ -32,6 +35,9 @@ public static class BusSystem
 
         public static Action<int, WaveData> OnSpawnWave;
         public static void SpawnWave(int eventId, WaveData waveData) { OnSpawnWave?.Invoke(eventId, waveData); }
+
+        public static Action<int, BossSpawnData> OnSpawnBoss;
+        public static void SpawnBoss(int eventId, BossSpawnData bossData) { OnSpawnBoss?.Invoke(eventId, bossData); }
 
         public static Action<int> OnLevelEventFinished;
         public static void LevelEventFinished(int eventId) { OnLevelEventFinished?.Invoke(eventId); }
