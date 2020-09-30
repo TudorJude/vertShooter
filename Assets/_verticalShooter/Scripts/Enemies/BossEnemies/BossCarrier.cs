@@ -32,7 +32,7 @@ public class BossCarrier : MonoBehaviour
 
     private void KillSelf()
     {
-        BusSystem.General.DefeatBoss(genericBossBehaviour);        
+        BusSystem.General.DefeatBoss(genericBossBehaviour);
     }
 
     //coroutines

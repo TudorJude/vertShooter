@@ -121,6 +121,7 @@ public class EnemySpawner : MonoBehaviour
 
     //boss related variables
     private GenericBossBehaviour currentBoss;
+    private int bossEventID;
 
     private void Awake()
     {
@@ -257,11 +258,13 @@ public class EnemySpawner : MonoBehaviour
     private void HandleSpawnBoss(int levelEventId, BossSpawnData bossData)
     {
         currentBoss = Instantiate(bossData.BossPrefab, new Vector3(0f, 14f, 0), Quaternion.identity);
+        bossEventID = levelEventId;
     }
 
     private void HandleCleanUpBoss(GenericBossBehaviour genericBossBehaviour)
     {
         Destroy(currentBoss.gameObject);
+        BusSystem.LevelEvents.LevelEventFinished(bossEventID);
     }
 
     //IEnumerators
