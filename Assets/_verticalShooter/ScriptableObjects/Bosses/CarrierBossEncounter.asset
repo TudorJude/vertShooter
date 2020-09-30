@@ -12,5 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ad3c5c25efc7c0458335596fe046b0a, type: 3}
   m_Name: CarrierBossEncounter
   m_EditorClassIdentifier: 
-  eventID: 0
-  BossPrefab: {fileID: 0}
+  eventID: 1000
+  BossPrefab: {fileID: 5722430053185493906, guid: a6195cdc90b17db46ae8838e96701317,
+    type: 3}
