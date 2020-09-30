@@ -156,6 +156,7 @@ public class EnemySpawner : MonoBehaviour
         //level events
         BusSystem.LevelEvents.OnSpawnWave += HandleSpawnWave;
         BusSystem.LevelEvents.OnSpawnBoss += HandleSpawnBoss;
+        BusSystem.General.OnBossDefeated += HandleCleanUpBoss;
     }
 
     private void OnDisable()
@@ -165,6 +166,7 @@ public class EnemySpawner : MonoBehaviour
         //level events
         BusSystem.LevelEvents.OnSpawnWave -= HandleSpawnWave;
         BusSystem.LevelEvents.OnSpawnBoss -= HandleSpawnBoss;
+        BusSystem.General.OnBossDefeated -= HandleCleanUpBoss;
     }
 
     private void Update()
@@ -254,8 +256,12 @@ public class EnemySpawner : MonoBehaviour
 
     private void HandleSpawnBoss(int levelEventId, BossSpawnData bossData)
     {
-        currentBoss = bossData.BossPrefab;
-        Instantiate(currentBoss, new Vector3(0f, 14f, 0), Quaternion.identity);
+        currentBoss = Instantiate(bossData.BossPrefab, new Vector3(0f, 14f, 0), Quaternion.identity);
+    }
+
+    private void HandleCleanUpBoss(GenericBossBehaviour genericBossBehaviour)
+    {
+        Destroy(currentBoss.gameObject);
     }
 
     //IEnumerators

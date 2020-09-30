@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
     [Header("Prefabs")]
     public HitParticle hitParticlePrefab;
     public HitParticle enemyDeathEffectPrefab;
+    public HitParticle bossDieParticle;
 
     //temporary
     public LevelData levelToTest;
@@ -71,7 +72,7 @@ public class GameManager : MonoBehaviour
         //effect related events
         BusSystem.Effects.OnBulletImpact += HandleBulletImpact;
         BusSystem.General.OnEnemyDestroyed += HandleEnemyDied;
-
+        BusSystem.General.OnBossDefeated += HandleBossDied;
         //level data
         BusSystem.LevelEvents.OnLevelEventFinished += ChainToNextLevelEvent;
     }
@@ -87,7 +88,7 @@ public class GameManager : MonoBehaviour
         //effect related events
         BusSystem.Effects.OnBulletImpact -= HandleBulletImpact;
         BusSystem.General.OnEnemyDestroyed -= HandleEnemyDied;
-
+        BusSystem.General.OnBossDefeated -= HandleBossDied;
         //level data
         BusSystem.LevelEvents.OnLevelEventFinished -= ChainToNextLevelEvent;
     }
@@ -174,6 +175,21 @@ public class GameManager : MonoBehaviour
         hitPart.OnCleanMe = () =>
         {
             enemyDeathEffectPool.Destroy(hitPart);
+        };
+
+        //play a sound
+        audioSource.clip = hitSound;
+        audioSource.Play();
+    }
+
+    private void HandleBossDied(GenericBossBehaviour gbb)
+    {
+        Vector3 deathPos = gbb.gameObject.transform.position;
+        HitParticle hitPart = Instantiate(bossDieParticle, deathPos, Quaternion.identity);
+        hitPart.transform.position = deathPos;
+        hitPart.OnCleanMe = () =>
+        {
+            Destroy(hitPart.gameObject);
         };
 
         //play a sound

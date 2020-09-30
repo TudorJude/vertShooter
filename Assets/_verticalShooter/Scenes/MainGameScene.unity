@@ -241,7 +241,9 @@ MonoBehaviour:
     type: 3}
   enemyDeathEffectPrefab: {fileID: 7249409410971720587, guid: d8c5b1b55983934429735bf9aa4e5562,
     type: 3}
-  levelToTest: {fileID: 11400000, guid: e5fcef1957c2db741ab8cd63ea4aec54, type: 2}
+  bossDieParticle: {fileID: 5076632378434689361, guid: 2da3b63a9487a884e9027aac8dcee445,
+    type: 3}
+  levelToTest: {fileID: 11400000, guid: 1f7144587f74ead4ca942e702f3ba692, type: 2}
 --- !u!4 &213287938
 Transform:
   m_ObjectHideFlags: 0

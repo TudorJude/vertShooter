@@ -19,6 +19,9 @@ public static class BusSystem
         public static Action<Enemy> OnEnemyDestroyed;
         public static void DestroyEnemy(Enemy enemy) { OnEnemyDestroyed?.Invoke(enemy); }
 
+        public static Action<GenericBossBehaviour> OnBossDefeated;
+        public static void DefeatBoss(GenericBossBehaviour genericBossBehaviour) { OnBossDefeated?.Invoke(genericBossBehaviour); }
+
         public static Action OnGamePaused;
         public static void PauseGame() { OnGamePaused?.Invoke(); }
         public static Action OnGameResumed;

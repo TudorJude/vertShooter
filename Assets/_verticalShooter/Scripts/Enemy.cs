@@ -49,7 +49,7 @@ public class Enemy : MonoBehaviour
 
     }
 
-    private void GetHit(Bullet bulletInfo)
+    public void GetHit(Bullet bulletInfo)
     {
         hitPoints -= bulletInfo.damage;
         if(hitPoints <= 0)

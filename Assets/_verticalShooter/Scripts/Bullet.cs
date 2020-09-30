@@ -35,8 +35,8 @@ public class Bullet : MonoBehaviour
     {
         if(collision.tag == "Enemy")
         {
-            HitEnemy(collision.transform.position);
-            collision.SendMessage("GetHit", this);            
+            HitEnemy(transform.position);
+            collision.SendMessage("GetHit", this);           
         }
     }
 }

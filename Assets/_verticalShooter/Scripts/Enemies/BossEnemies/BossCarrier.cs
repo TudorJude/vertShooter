@@ -6,10 +6,33 @@ public class BossCarrier : MonoBehaviour
 {
     public float finalBossPosition = 5f;
     public float speed = 2;
+    public int hitPoints = 100;
+
+    private GenericBossBehaviour genericBossBehaviour;
 
     private void Awake()
     {
+        genericBossBehaviour = GetComponent<GenericBossBehaviour>();
+    }
+
+    private void Start()
+    {
         StartCoroutine(StartSequence());
+    }
+
+    public void GetHit(Bullet bulletInfo)
+    {
+        Debug.Log("Boss got hit!");
+        hitPoints -= bulletInfo.damage;
+        if (hitPoints <= 0)
+        {
+            KillSelf();
+        }
+    }
+
+    private void KillSelf()
+    {
+        BusSystem.General.DefeatBoss(genericBossBehaviour);        
     }
 
     //coroutines
